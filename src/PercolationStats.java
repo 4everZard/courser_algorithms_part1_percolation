@@ -27,7 +27,7 @@ public class PercolationStats {
                 } while (p.isOpen(row, col));
                 p.open(row, col);
                 if (p.percolates()) {
-                    xt[t] = (double) c / (double) (n * n);
+                    xt[t] = (double) (c + 1) / (double) (n * n);
                     break;
                 }
             }
@@ -35,8 +35,8 @@ public class PercolationStats {
 
         this.mean = StdStats.mean(xt);
         this.stddev = (trials == 1) ? Double.NaN : StdStats.stddev(xt);
-        this.confidenceLo = mean() - (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(trials);
-        this.confidenceHi = mean() + (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(trials);
+        this.confidenceLo = mean() - CONFIDENCE_95 * stddev() / Math.sqrt(trials);
+        this.confidenceHi = mean() + CONFIDENCE_95 * stddev() / Math.sqrt(trials);
     }
 
     /*
