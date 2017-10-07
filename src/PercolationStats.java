@@ -4,8 +4,6 @@ import edu.princeton.cs.algs4.StdStats;
 public class PercolationStats {
 
     private static final double CONFIDENCE_95 = 1.96;
-    private final int trials;
-    private final double[] xt;
     private final double mean;
     private final double stddev;
     private final double confidenceLo;
@@ -16,8 +14,7 @@ public class PercolationStats {
         if (n <= 0 || trials <= 0) {
             throw new IllegalArgumentException();
         }
-        this.trials = trials;
-        this.xt = new double[trials];
+        double[] xt = new double[trials];
 
         for (int t = 0; t < trials; t++) {
             Percolation p = new Percolation(n);
@@ -30,16 +27,16 @@ public class PercolationStats {
                 } while (p.isOpen(row, col));
                 p.open(row, col);
                 if (p.percolates()) {
-                    this.xt[t] = (double) c / (n * n);
+                    xt[t] = (double) c / (double) (n * n);
                     break;
                 }
             }
         }
 
-        this.mean = StdStats.mean(this.xt);
-        this.stddev = (this.trials == 1) ? Double.NaN : StdStats.stddev(this.xt);
-        this.confidenceLo = mean() - (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(this.trials);
-        this.confidenceHi = mean() + (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(this.trials);
+        this.mean = StdStats.mean(xt);
+        this.stddev = (trials == 1) ? Double.NaN : StdStats.stddev(xt);
+        this.confidenceLo = mean() - (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(trials);
+        this.confidenceHi = mean() + (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(trials);
     }
 
     /*
