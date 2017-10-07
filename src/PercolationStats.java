@@ -6,6 +6,10 @@ public class PercolationStats {
     private static final double CONFIDENCE_95 = 1.96;
     private final int trials;
     private final double[] xt;
+    private final double mean;
+    private final double stddev;
+    private final double confidenceLo;
+    private final double confidenceHi;
 
     // perform trials independent experiments on an n-by-n grid
     public PercolationStats(int n, int trials) {
@@ -31,6 +35,11 @@ public class PercolationStats {
                 }
             }
         }
+
+        this.mean = StdStats.mean(this.xt);
+        this.stddev = (this.trials == 1) ? Double.NaN : StdStats.stddev(this.xt);
+        this.confidenceLo = mean() - (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(this.trials);
+        this.confidenceHi = mean() + (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(this.trials);
     }
 
     /*
@@ -50,28 +59,23 @@ public class PercolationStats {
         System.out.println("95% confidence interval\t= [" + ps.confidenceLo() + ", " + ps.confidenceHi() + "]");
     }
 
-
-
-
     // sample mean of percolation threshold
     public double mean() {
-        return StdStats.mean(this.xt);
+        return this.mean;
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        if (this.trials == 1)
-            return Double.NaN;
-        return StdStats.stddev(this.xt);
+        return this.stddev;
     }
 
     // low  endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean() - (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(this.trials);
+        return this.confidenceLo;
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return mean() + (CONFIDENCE_95 * Math.sqrt(stddev())) / Math.sqrt(this.trials);
+        return this.confidenceHi;
     }
 }
